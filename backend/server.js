@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import postRoutes from './routes/postRoutes.js';
 import connectMongoDB from './db/connectMongo.js';
 import cookieParser from 'cookie-parser';
 import {v2 as cloudinary} from 'cloudinary';
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/posts', postRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server is ready');
