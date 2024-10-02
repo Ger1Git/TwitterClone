@@ -4,12 +4,12 @@ import bcrypt from "bcryptjs";
 import {v2 as cloudinary} from 'cloudinary';
 
 
-export const getProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
     const { username } = req.params;
 
     try {
         const user = await User.findOne({ username }).select("-password");
-        
+
         if (!user) {
             return res.status(404).json({
                 error: "User not found"
@@ -50,7 +50,7 @@ export const toggleFollowStatus = async (req, res) => {
             await User.findByIdAndUpdate(id, {
                 $pull: { followers: req.user._id }
             });
-            await User.findByIdAndUpdate(req.user._id, { 
+            await User.findByIdAndUpdate(req.user._id, {
                 $pull: { following: id }
             })
 
@@ -59,7 +59,7 @@ export const toggleFollowStatus = async (req, res) => {
                 from: req.user._id,
                 to: userToModify._id
             });
-            
+
             await newNotification.save();
 
             return res.status(200).json({
@@ -71,7 +71,7 @@ export const toggleFollowStatus = async (req, res) => {
                 $push: { followers: req.user._id }
             });
 
-            await User.findByIdAndUpdate(req.user._id, { 
+            await User.findByIdAndUpdate(req.user._id, {
                 $push: { following: id }
             })
 
@@ -80,7 +80,7 @@ export const toggleFollowStatus = async (req, res) => {
                 from: req.user._id,
                 to: userToModify._id
             });
-            
+
             await newNotification.save();
 
             return res.status(200).json({
@@ -95,7 +95,7 @@ export const toggleFollowStatus = async (req, res) => {
     }
 }
 
-export const getSuggestedUsers = async (req, res) => {
+export const getUserSuggestions = async (req, res) => {
     try {
         const userId = req.user._id;
 
@@ -124,11 +124,11 @@ export const getSuggestedUsers = async (req, res) => {
     }
 }
 
-export const updateUser = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
     const { fullName, email, username, currentPassword, newPassword, bio, link} = req.body;
     let { profileImg, coverImg } = req.body;
     const userId = req.user._id;
-    
+
     try {
         let user = await User.findById(userId);
 
