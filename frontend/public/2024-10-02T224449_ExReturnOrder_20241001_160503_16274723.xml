@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ExportOrderReturns xsi:noNamespaceSchemaLocation="ExportOrderReturns.xsd" CompanyName="Jack Wolfskin" TestMode="0" MessageDateTime="2024-10-01T14:05:03" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ReturnPackages>
+    <Datasource>PRODUKTIV</Datasource>
+    <NumberOfReturns>1</NumberOfReturns>
+    <ReturnPackage>
+      <Package>
+        <ReturnDate>2024-10-01</ReturnDate>
+        <ReturnType>RETOURE</ReturnType>
+        <ReturnPackNo>81460759</ReturnPackNo>
+      </Package>
+      <Returns>
+        <Return>
+          <Shop />
+          <Header>
+            <OrderNo>JWA11404202562</OrderNo>
+            <DeliveryNo>L3369389</DeliveryNo>
+            <ReturnNo>81460759</ReturnNo>
+            <Country>AT</Country>
+            <ExchangeRate>0</ExchangeRate>
+            <PromotionMedium>AT_22021_FH24</PromotionMedium>
+          </Header>
+          <Items>
+            <Item>
+              <DeliveryItemNumber>5</DeliveryItemNumber>
+              <ArticleNo>A61854_C0411_K12</ArticleNo>
+              <ArticleDescription>FOURWINDS JACKET KIDS</ArticleDescription>
+              <Quantity>1</Quantity>
+              <ItemValue>59.95</ItemValue>
+              <ItemValueLCY>59.95</ItemValueLCY>
+              <ItemCurrency>EUR</ItemCurrency>
+              <Reason>10</Reason>
+            </Item>
+            <Item>
+              <DeliveryItemNumber>3</DeliveryItemNumber>
+              <ArticleNo>1910362_1010_OS</ArticleNo>
+              <ArticleDescription>REAL STUFF BEANIE K</ArticleDescription>
+              <Quantity>1</Quantity>
+              <ItemValue>14.95</ItemValue>
+              <ItemValueLCY>14.95</ItemValueLCY>
+              <ItemCurrency>EUR</ItemCurrency>
+              <Reason>10</Reason>
+            </Item>
+            <Item>
+              <DeliveryItemNumber>3</DeliveryItemNumber>
+              <ArticleNo>1910362_1010_OS</ArticleNo>
+              <ArticleDescription>REAL STUFF BEANIE K</ArticleDescription>
+              <Quantity>1</Quantity>
+              <ItemValue>14.95</ItemValue>
+              <ItemValueLCY>14.95</ItemValueLCY>
+              <ItemCurrency>EUR</ItemCurrency>
+              <Reason>10</Reason>
+            </Item>
+          </Items>
+        </Return>
+      </Returns>
+    </ReturnPackage>
+  </ReturnPackages>
+</ExportOrderReturns>
