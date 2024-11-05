@@ -1,6 +1,6 @@
 import Post from "./Post";
 import PostSkeleton from "./PostSkeleton";
-import { POSTS } from "../util/dummy";
+import { POSTS } from "../utils/dummy";
 
 const Posts = () => {
 	const isLoading = false;

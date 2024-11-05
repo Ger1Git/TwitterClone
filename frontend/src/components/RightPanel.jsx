@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import RightPanelSkeleton from "./RightPanelSkeleton";
-import { USERS_FOR_RIGHT_PANEL } from "../util/dummy";
+import { USERS_FOR_RIGHT_PANEL } from "../utils/dummy";
 
 const RightPanel = () => {
 	const isLoading = false;

@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-import Posts from "../../components/common/Posts";
-import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
-import EditProfileModal from "./EditProfileModal";
+import Posts from "../../components/Posts";
+import ProfileHeaderSkeleton from "../../components/ProfileHeaderSkeleton";
+import EditProfileModal from "./components/EditProfileModal";
 
-import { POSTS } from "../../utils/db/dummy";
+import { POSTS } from "../../utils/dummy";
 
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
@@ -84,12 +84,14 @@ const ProfilePage = () => {
 								<input
 									type='file'
 									hidden
+									accept='image/*'
 									ref={coverImgRef}
 									onChange={(e) => handleImgChange(e, "coverImg")}
 								/>
 								<input
 									type='file'
 									hidden
+									accept='image/*'
 									ref={profileImgRef}
 									onChange={(e) => handleImgChange(e, "profileImg")}
 								/>
