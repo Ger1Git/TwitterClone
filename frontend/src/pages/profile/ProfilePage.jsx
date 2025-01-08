@@ -73,15 +73,20 @@ const ProfilePage = () => {
                             </div>
                             {/* COVER IMG */}
                             <div className="relative group/cover">
-                                <img
-                                    src={
-                                        coverImg ||
-                                        user?.coverImg ||
-                                        '/cover.png'
-                                    }
-                                    className="h-52 w-full object-cover"
-                                    alt="cover image"
-                                />
+                                {coverImg ? (
+                                    <img
+                                        src={
+                                            coverImg ||
+                                            user?.coverImg ||
+                                            'avatars/cover.png'
+                                        }
+                                        className="h-52 w-full object-cover"
+                                        alt="cover image"
+                                    />
+                                ) : (
+                                    <div className="bg-black h-52 w-full"></div>
+                                )}
+
                                 {isMyProfile && (
                                     <div
                                         className="absolute top-2 right-2 rounded-full p-2 bg-gray-800 bg-opacity-75 cursor-pointer opacity-0 group-hover/cover:opacity-100 transition duration-200"

@@ -1,5 +1,6 @@
 import {
     FaRegComment,
+    FaHeart,
     FaRegHeart,
     FaRegBookmark,
     FaTrash
@@ -13,71 +14,53 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 const Post = ({ post }) => {
     const [newComment, setNewComment] = useState('');
-    const { data: authUser } = useQuery({
-        queryKey: ['authUser']
-    });
-    const isUserPostOwner = authUser._id === post.user._id;
+    const [hasLikedPost, setHasLikedPost] = useState(post.isLikedByUser);
     const queryClient = useQueryClient();
+    const { data: authUser } = useQuery({ queryKey: ['authUser'] });
+    const isUserPostOwner = authUser?._id === post.user._id;
 
-    const { mutate: deletePost, isPending } = useMutation({
+    const { mutate: deletePost, isPending: isDeleting } = useMutation({
         mutationFn: async () => {
-            try {
-                const res = await fetch(`/api/posts/delete/${post._id}`, {
-                    method: 'DELETE'
-                });
-
-                if (!res.ok) {
-                    throw new Error('Something went wrong');
-                }
-
-                const data = await res.json();
-            } catch (error) {
-                throw new Error(error);
-            }
+            const res = await fetch(`/api/posts/delete/${post._id}`, {
+                method: 'DELETE'
+            });
+            if (!res.ok) throw new Error('Failed to delete post');
         },
         onSuccess: () => {
-            toast.success('Post deleted succesfully');
-            queryClient.invalidateQueries({ queryKey: ['posts'] });
+            toast.success('Post deleted successfully');
+            queryClient.invalidateQueries(['posts']);
         }
     });
 
     const { mutate: likePost, isPending: isLiking } = useMutation({
         mutationFn: async () => {
-            try {
-                const res = await fetch(`/api/posts/like/${post._id}`, {
-                    method: 'POST'
-                });
-
-                if (!res.ok) {
-                    throw new Error(data.error || 'Something went wrong');
-                }
-
-                const data = res.json();
-
-                return data;
-            } catch (error) {
-                throw new Error(error);
-            }
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ['posts']
+            const res = await fetch(`/api/posts/like/${post._id}`, {
+                method: 'POST'
             });
+            if (!res.ok) throw new Error('Failed to like/unlike post');
+            return await res.json();
+        },
+        onSuccess: ({ likes, isLikedByUser }) => {
+            queryClient.setQueryData(['posts'], (oldData) =>
+                oldData.map((p) =>
+                    p._id === post._id ? { ...p, likes, isLikedByUser } : p
+                )
+            );
+            setHasLikedPost(isLikedByUser);
         }
     });
 
+    const toggleLikePost = () => {
+        if (isLiking) return;
+        likePost();
+    };
+
     const postAuthor = post.user;
-    const hasLikedPost = false;
     const postDate = '1h';
     const isSubmittingComment = true;
 
     const submitComment = (e) => {
         e.preventDefault();
-        // Submit new comment
-    };
-
-    const toggleLikePost = () => {
-        // Handle like/unlike functionality
     };
 
     return (
@@ -88,7 +71,7 @@ const Post = ({ post }) => {
                     className="w-8 rounded-full overflow-hidden"
                 >
                     <img
-                        src={postAuthor.profileImg || '/avatar-placeholder.png'}
+                        src={postAuthor.profileImg || 'avatars/placeholder.png'}
                         alt="Author Avatar"
                     />
                 </Link>
@@ -110,7 +93,7 @@ const Post = ({ post }) => {
                     </span>
                     {isUserPostOwner && (
                         <span className="flex justify-end flex-1">
-                            {isPending ? (
+                            {isDeleting ? (
                                 <LoadingSpinner size="sm" />
                             ) : (
                                 <FaTrash
@@ -136,9 +119,7 @@ const Post = ({ post }) => {
                         <div
                             className="flex gap-1 items-center cursor-pointer group"
                             onClick={() =>
-                                document
-                                    .getElementById('comments_modal' + post._id)
-                                    .showModal()
+                                document.getElementById(post._id).showModal()
                             }
                         >
                             <FaRegComment className="w-4 h-4 text-slate-500 group-hover:text-sky-400" />
@@ -231,16 +212,21 @@ const Post = ({ post }) => {
                             onClick={toggleLikePost}
                         >
                             {hasLikedPost ? (
-                                <FaRegHeart className="w-4 h-4 cursor-pointer text-pink-500" />
+                                <FaHeart
+                                    className="w-4 h-4 cursor-pointer text-pink-500"
+                                    fill="#ec4899"
+                                />
                             ) : (
                                 <FaRegHeart className="w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500" />
                             )}
                             <span
-                                className={`text-sm text-slate-500 group-hover:text-pink-500 ${
-                                    hasLikedPost ? 'text-pink-500' : ''
+                                className={`text-sm group-hover:text-pink-500 ${
+                                    hasLikedPost
+                                        ? 'text-pink-500'
+                                        : 'text-slate-500'
                                 }`}
                             >
-                                {post.likes.length}
+                                {post?.likes?.length || 0}
                             </span>
                         </div>
                     </div>

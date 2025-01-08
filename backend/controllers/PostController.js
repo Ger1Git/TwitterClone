@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import Post from '../models/Post.js';
 import Notification from '../models/Notification.js';
-import {v2 as cloudinary} from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const createPost = async (req, res) => {
     try {
@@ -14,7 +14,7 @@ export const createPost = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 error: 'User not found'
-            })
+            });
         }
 
         if (image) {
@@ -25,7 +25,7 @@ export const createPost = async (req, res) => {
         if (!text && !image) {
             return res.status(400).json({
                 error: 'Post must contain an image or a text'
-            })
+            });
         }
 
         const newPost = new Post({
@@ -38,11 +38,11 @@ export const createPost = async (req, res) => {
         return res.status(201).json(newPost);
     } catch (error) {
         res.status(500).json({
-            'error': 'Internal server error'
+            error: 'Internal server error'
         });
-        console.log("Error in createPost controller: ", error);
+        console.log('Error in createPost controller: ', error);
     }
-}
+};
 
 export const deletePost = async (req, res) => {
     try {
@@ -76,7 +76,7 @@ export const deletePost = async (req, res) => {
             error: 'Internal server error'
         });
     }
-}
+};
 
 export const commentOnPost = async (req, res) => {
     try {
@@ -106,70 +106,99 @@ export const commentOnPost = async (req, res) => {
         post.comments.push(comment);
         await post.save();
 
-        return res.status(200).json(post)
-    } catch (error) {
-
-    }
-}
+        return res.status(200).json(post);
+    } catch (error) {}
+};
 
 export const likeDislikePost = async (req, res) => {
     try {
         const userId = req.user._id;
-        const {id: postId} = req.params;
+        const { id: postId } = req.params;
 
         const post = await Post.findById(postId);
 
         if (!post) {
-            return res.status(404).json({
-                error: 'Post not found'
-            });
+            return res.status(404).json({ error: 'Post not found' });
         }
 
         const userLikedPost = post.likes.includes(userId);
 
         if (userLikedPost) {
-            await Post.updateOne({_id: postId}, {$pull: {likes: userId}});
-            await User.updateOne({_id: userId}, {$pull: {likedPosts: postId}});
+            // Unlike the post
+            await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
+            await User.updateOne(
+                { _id: userId },
+                { $pull: { likedPosts: postId } }
+            );
 
-            return res.status(200).json({
-                message: 'Post unliked succesfully'
-            });
+            // Refetch updated post likes
+            const updatedPost = await Post.findById(postId).select('likes');
+            return res.status(200).json(updatedPost.likes);
         } else {
-            await Post.updateOne({ _id: postId }, { $addToSet: { likes: userId } });
-            await User.updateOne({ _id: userId }, { $addToSet: { likedPosts: postId } });
+            await Post.updateOne(
+                { _id: postId },
+                { $addToSet: { likes: userId } }
+            );
+            await User.updateOne(
+                { _id: userId },
+                { $addToSet: { likedPosts: postId } }
+            );
 
-            const notification = new Notification({
+            // Prevent duplicate notifications
+            const existingNotification = await Notification.findOne({
                 from: userId,
                 to: post.user,
-                type: "like"
-            })
+                type: 'like',
+                post: postId
+            });
 
-            await notification.save();
+            if (!existingNotification) {
+                const notification = new Notification({
+                    from: userId,
+                    to: post.user,
+                    type: 'like',
+                    post: postId
+                });
+                await notification.save();
+            }
 
+            // Refetch updated post likes
+            const updatedPost = await Post.findById(postId).select('likes');
             return res.status(200).json({
-                message: 'Post liked successfully'
+                likes: updatedPost.likes,
+                isLikedByUser: !userLikedPost
             });
         }
     } catch (error) {
-        console.log("Error in likeUnlikePost controller: ", error);
-        res.status(500).json({
-            error: 'Internal server error'
-        });
+        console.error('Error in likeDislikePost:', error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
 
 export const getAllPosts = async (req, res) => {
     try {
-        const posts = await Post.find().sort({createdAt: -1}).populate('user', '-password').populate('comments.user', '-password').populate('likes', '-password');
+        const userId = req.user._id; // The authenticated user's ID
+        const posts = await Post.find()
+            .sort({ createdAt: -1 })
+            .populate('user', '-password')
+            .populate('comments.user', '-password')
+            .populate('likes', '-password');
 
-        return res.status(200).json(posts);
+        const postsWithLikeStatus = posts.map((post) => ({
+            ...post.toObject(),
+            isLikedByUser: post.likes.some(
+                (like) => like._id.toString() === userId.toString()
+            )
+        }));
+
+        return res.status(200).json(postsWithLikeStatus);
     } catch (error) {
         console.log('Error in getAllPosts controller: ', error);
         res.status(500).json({
             error: 'Internal server error'
         });
     }
-}
+};
 
 export const getLikedPosts = async (req, res) => {
     const userId = req.user._id;
@@ -180,10 +209,13 @@ export const getLikedPosts = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 error: 'User not found'
-            })
+            });
         }
 
-        const likedPosts = await Post.find({_id: {$in: user.likedPosts}}).populate('user', '-password').populate('comments.user', '-password').populate('likes', '-password');
+        const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })
+            .populate('user', '-password')
+            .populate('comments.user', '-password')
+            .populate('likes', '-password');
 
         return res.status(200).json(likedPosts);
     } catch (error) {
@@ -192,7 +224,7 @@ export const getLikedPosts = async (req, res) => {
             error: 'Internal server error'
         });
     }
-}
+};
 
 export const getFollowingPosts = async (req, res) => {
     const userId = req.user._id;
@@ -203,11 +235,13 @@ export const getFollowingPosts = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 error: 'User not found'
-            })
+            });
         }
 
-        const followingPosts = await Post.find({user: {$in: user.following}})
-            .sort({createdAt: -1})
+        const followingPosts = await Post.find({
+            user: { $in: user.following }
+        })
+            .sort({ createdAt: -1 })
             .populate('user', '-password')
             .populate('comments.user', '-password')
             .populate('likes', '-password');
@@ -219,7 +253,7 @@ export const getFollowingPosts = async (req, res) => {
             error: 'Internal server error'
         });
     }
-}
+};
 
 export const getUserPosts = async (req, res) => {
     const { username } = req.params;
@@ -230,11 +264,11 @@ export const getUserPosts = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 error: 'User not found'
-            })
+            });
         }
 
-        const myPosts = await Post.find({user: user._id})
-            .sort({createdAt: -1})
+        const myPosts = await Post.find({ user: user._id })
+            .sort({ createdAt: -1 })
             .populate('user', '-password')
             .populate('comments.user', '-password')
             .populate('likes', '-password');
@@ -246,4 +280,4 @@ export const getUserPosts = async (req, res) => {
             error: 'Internal server error'
         });
     }
-}
+};

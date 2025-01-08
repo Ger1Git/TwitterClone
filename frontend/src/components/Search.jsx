@@ -88,10 +88,27 @@ const Search = () => {
                             <Link
                                 to={`/profile/${user.username}`}
                                 key={user._id}
-                                className="text-gray-300 py-2 px-3 hover:bg-[#3a3f44] rounded-md cursor-pointer"
+                                className="flex flex-col text-gray-300 py-2 px-2 hover:bg-[#3a3f44] rounded-md cursor-pointer"
                             >
-                                <p className="font-bold">{user.fullName}</p>
-                                <p className="text-sm">{user.username}</p>
+                                <div className="inline-flex items-center gap-2 relative">
+                                    <div className="w-8 rounded-full overflow-hidden">
+                                        <img
+                                            src={
+                                                user.profileImg ||
+                                                'avatars/placeholder.png'
+                                            }
+                                            alt="User Avatar"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <p className="font-bold">
+                                            {user.fullName}
+                                        </p>
+                                        <p className="text-sm">
+                                            {user.username}
+                                        </p>
+                                    </div>
+                                </div>
                             </Link>
                         ))
                     )}
