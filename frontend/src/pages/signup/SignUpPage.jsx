@@ -3,7 +3,7 @@ import { useState } from "react";
 import XSvg from "../../components/XSVG";
 import { MdOutlineMail, MdPassword, MdDriveFileRenameOutline } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 
 const SignUpPage = () => {
@@ -13,6 +13,8 @@ const SignUpPage = () => {
 		fullName: "",
 		password: "",
 	});
+
+	const queryClient = useQueryClient();
 
 	const { mutate: signUp, isError, isPending, error } = useMutation({
 		mutationFn: async (userData) => {
@@ -37,6 +39,7 @@ const SignUpPage = () => {
 		},
 		onSuccess: () => {
 			toast.success('Account created succesfully');
+			queryClient.invalidateQueries({queryKey: ['authUser']});
 		}
 	});
 

@@ -7,7 +7,7 @@ export const createPost = async (req, res) => {
     try {
         const { text } = req.body;
         const userId = req.user._id.toString();
-        let { img } = req.body;
+        let { image } = req.body;
 
         const user = await User.findById(userId);
 
@@ -17,12 +17,12 @@ export const createPost = async (req, res) => {
             })
         }
 
-        if (img) {
-            const uploadedResponse = await cloudinary.uploader.upload(img);
-            img = uploadedResponse.secure_url;
+        if (image) {
+            const uploadedResponse = await cloudinary.uploader.upload(image);
+            image = uploadedResponse.secure_url;
         }
 
-        if (!text && !img) {
+        if (!text && !image) {
             return res.status(400).json({
                 error: 'Post must contain an image or a text'
             })
@@ -31,7 +31,7 @@ export const createPost = async (req, res) => {
         const newPost = new Post({
             user: userId,
             text,
-            img
+            image
         });
 
         await newPost.save();

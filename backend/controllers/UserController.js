@@ -95,6 +95,35 @@ export const toggleFollowStatus = async (req, res) => {
     }
 }
 
+export const getUsers = async (req, res) => {
+    try {
+        const searchQuery = req.query.search || '';
+
+        const users = await User.aggregate([
+            {
+                $match: {
+                    $or: [
+                        { username: { $regex: searchQuery, $options: 'i' } },
+                        { fullName: { $regex: searchQuery, $options: 'i' } }
+                    ]
+                }
+            },
+            { $sample: { size: 20 } }
+        ]);
+
+        const suggestedUsers = users.slice(0, 6);
+        suggestedUsers.forEach(user => user.password = null);
+
+        return res.status(200).json(suggestedUsers);
+    } catch (error) {
+        console.log("Error in getUserSuggestions: ", error.message);
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+};
+
+
 export const getUserSuggestions = async (req, res) => {
     try {
         const userId = req.user._id;
