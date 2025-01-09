@@ -15,7 +15,7 @@ import { MdEdit } from 'react-icons/md';
 const ProfilePage = () => {
     const [coverImg, setCoverImg] = useState(null);
     const [profileImg, setProfileImg] = useState(null);
-    const [feedType, setFeedType] = useState('posts');
+    const [feedType, setFeedType] = useState('forYou');
 
     const coverImgRef = useRef(null);
     const profileImgRef = useRef(null);
@@ -223,7 +223,7 @@ const ProfilePage = () => {
                             <div className="flex w-full border-b border-gray-700 mt-4">
                                 <div
                                     className="flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 relative cursor-pointer"
-                                    onClick={() => setFeedType('posts')}
+                                    onClick={() => setFeedType('forYou')}
                                 >
                                     Posts
                                     {feedType === 'posts' && (
@@ -243,7 +243,7 @@ const ProfilePage = () => {
                         </>
                     )}
 
-                    <Posts />
+                    <Posts feedType={feedType} />
                 </div>
             </div>
         </>

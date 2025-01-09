@@ -100,14 +100,18 @@ export const commentOnPost = async (req, res) => {
 
         const comment = {
             user: userId,
-            text
+            text,
+            createdAt: new Date()
         };
 
         post.comments.push(comment);
         await post.save();
 
         return res.status(200).json(post);
-    } catch (error) {}
+    } catch (error) {
+        console.error('Error commenting on post:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 };
 
 export const likeDislikePost = async (req, res) => {
@@ -124,16 +128,18 @@ export const likeDislikePost = async (req, res) => {
         const userLikedPost = post.likes.includes(userId);
 
         if (userLikedPost) {
-            // Unlike the post
             await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
             await User.updateOne(
                 { _id: userId },
                 { $pull: { likedPosts: postId } }
             );
 
-            // Refetch updated post likes
             const updatedPost = await Post.findById(postId).select('likes');
-            return res.status(200).json(updatedPost.likes);
+
+            return res.status(200).json({
+                likes: updatedPost.likes,
+                isLikedByUser: false
+            });
         } else {
             await Post.updateOne(
                 { _id: postId },

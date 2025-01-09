@@ -46,7 +46,39 @@ const Post = ({ post }) => {
                     p._id === post._id ? { ...p, likes, isLikedByUser } : p
                 )
             );
+
             setHasLikedPost(isLikedByUser);
+        },
+        onError: () => {
+            toast.error('Failed to like/unlike the post');
+        }
+    });
+
+    const { mutate: commentPost, isPending: isCommenting } = useMutation({
+        mutationFn: async () => {
+            const res = await fetch(`/api/posts/comment/${post._id}`, {
+                method: 'POST',
+                body: JSON.stringify({ text: newComment }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed to comment on post');
+            }
+
+            return await res.json();
+        },
+        onSuccess: (comment) => {
+            queryClient.setQueryData(['posts'], (oldData) =>
+                oldData.map((p) =>
+                    p._id === post._id
+                        ? { ...p, comments: [...p.comments, comment] }
+                        : p
+                )
+            );
+            setNewComment('');
         }
     });
 
@@ -61,6 +93,9 @@ const Post = ({ post }) => {
 
     const submitComment = (e) => {
         e.preventDefault();
+
+        if (isCommenting) return;
+        commentPost();
     };
 
     return (
@@ -129,11 +164,11 @@ const Post = ({ post }) => {
                         </div>
                         {/* Comments Modal */}
                         <dialog
-                            id={`comments_modal${post._id}`}
+                            id={post._id}
                             className="modal border-none outline-none"
                         >
                             <div className="modal-box rounded border border-gray-600">
-                                <h3 className="font-bold text-lg mb-4">
+                                <h3 className="font-bold text-lg mb-2">
                                     COMMENTS
                                 </h3>
                                 <div className="flex flex-col gap-3 max-h-60 overflow-auto">
@@ -146,7 +181,7 @@ const Post = ({ post }) => {
                                     {post.comments.map((comment) => (
                                         <div
                                             key={comment._id}
-                                            className="flex gap-2 items-start"
+                                            className="flex gap-2 items-center"
                                         >
                                             <div className="avatar">
                                                 <div className="w-8 rounded-full">
