@@ -31,8 +31,6 @@ const SuggestedUsers = () => {
     const handleFollow = (userId) => {
         setPendingFollow(userId);
         let d = follow(userId);
-
-        console.log(d);
     };
 
     if (!suggestedUsers?.length) {

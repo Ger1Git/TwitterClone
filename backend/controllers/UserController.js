@@ -1,19 +1,18 @@
-import User from "../models/User.js";
-import Notification from "../models/Notification.js";
-import bcrypt from "bcryptjs";
-import {v2 as cloudinary} from 'cloudinary';
-
+import User from '../models/User.js';
+import Notification from '../models/Notification.js';
+import bcrypt from 'bcryptjs';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const getUserProfile = async (req, res) => {
     const { username } = req.params;
 
     try {
-        const user = await User.findOne({ username }).select("-password");
+        const user = await User.findOne({ username }).select('-password');
 
         if (!user) {
             return res.status(404).json({
-                error: "User not found"
-            })
+                error: 'User not found'
+            });
         }
 
         return res.status(200).json(user);
@@ -21,9 +20,9 @@ export const getUserProfile = async (req, res) => {
         console.log('Error in getProfile', error.message);
         return res.status(500).json({
             error: error.message
-        })
+        });
     }
-}
+};
 
 export const toggleFollowStatus = async (req, res) => {
     try {
@@ -33,13 +32,13 @@ export const toggleFollowStatus = async (req, res) => {
 
         if (id === req.user._id.toString()) {
             return res.status(400).json({
-                error: "You cannot follow yourself"
+                error: 'You cannot follow yourself'
             });
         }
 
         if (!userToModify || !currentUser) {
             return res.status(400).json({
-                error: "User not found"
+                error: 'User not found'
             });
         }
 
@@ -52,7 +51,7 @@ export const toggleFollowStatus = async (req, res) => {
             });
             await User.findByIdAndUpdate(req.user._id, {
                 $pull: { following: id }
-            })
+            });
 
             const newNotification = new Notification({
                 type: 'follow',
@@ -63,7 +62,7 @@ export const toggleFollowStatus = async (req, res) => {
             await newNotification.save();
 
             return res.status(200).json({
-                message: "User unfollowed succesfully"
+                message: 'User unfollowed succesfully'
             });
         } else {
             // Follow logic
@@ -73,7 +72,7 @@ export const toggleFollowStatus = async (req, res) => {
 
             await User.findByIdAndUpdate(req.user._id, {
                 $push: { following: id }
-            })
+            });
 
             const newNotification = new Notification({
                 type: 'follow',
@@ -84,16 +83,16 @@ export const toggleFollowStatus = async (req, res) => {
             await newNotification.save();
 
             return res.status(200).json({
-                message: "User followed succesfully"
+                message: 'User followed succesfully'
             });
         }
     } catch (error) {
         console.log('Error in protectRoute middleware', error.message);
         return res.status(500).json({
-            error: "Internal Server Error"
+            error: 'Internal Server Error'
         });
     }
-}
+};
 
 export const getUsers = async (req, res) => {
     try {
@@ -112,76 +111,91 @@ export const getUsers = async (req, res) => {
         ]);
 
         const suggestedUsers = users.slice(0, 6);
-        suggestedUsers.forEach(user => user.password = null);
+        suggestedUsers.forEach((user) => (user.password = null));
 
         return res.status(200).json(suggestedUsers);
     } catch (error) {
-        console.log("Error in getUserSuggestions: ", error.message);
+        console.log('Error in getUserSuggestions: ', error.message);
         return res.status(500).json({
             error: error.message
         });
     }
 };
 
-
 export const getUserSuggestions = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        const usersFollowed = await User.findById(userId).select("following");
+        const usersFollowed = await User.findById(userId).select('following');
 
         const users = await User.aggregate([
             {
                 $match: {
-                    _id: {$ne: userId}
+                    _id: { $ne: userId }
                 }
             },
-            {$sample: {size: 20}}
-        ])
+            { $sample: { size: 20 } }
+        ]);
 
-        const filteredUsers = users.filter(user => !usersFollowed.following.includes(user._id));
+        const filteredUsers = users.filter(
+            (user) => !usersFollowed.following.includes(user._id)
+        );
         const suggestedUsers = filteredUsers.slice(0, 6);
 
-        suggestedUsers.forEach( user => user.password = null);
+        suggestedUsers.forEach((user) => (user.password = null));
 
         return res.status(200).json(suggestedUsers);
     } catch (error) {
-        console.log("Error in getSuggestedUsers: ", error.message);
+        console.log('Error in getSuggestedUsers: ', error.message);
         return res.status(500).json({
             error: error.message
         });
     }
-}
+};
 
 export const updateUserProfile = async (req, res) => {
-    const { fullName, email, username, currentPassword, newPassword, bio, link} = req.body;
+    const {
+        fullName,
+        email,
+        username,
+        currentPassword,
+        newPassword,
+        bio,
+        link
+    } = req.body;
     let { profileImg, coverImg } = req.body;
     const userId = req.user._id;
 
     try {
         let user = await User.findById(userId);
 
-        if (!user) return res.status(404).json({ error: 'User not found'});
+        if (!user) return res.status(404).json({ error: 'User not found' });
 
-        if ((!newPassword && currentPassword) || (newPassword && !currentPassword)) {
+        if (
+            (!newPassword && currentPassword) ||
+            (newPassword && !currentPassword)
+        ) {
             return res.status(404).json({
-                error: "Plase provide both current password and new password"
-            })
+                error: 'Plase provide both current password and new password'
+            });
         }
 
         if (currentPassword && newPassword) {
-            const isMatch = await bcrypt.compare(currentPassword, user.password);
+            const isMatch = await bcrypt.compare(
+                currentPassword,
+                user.password
+            );
 
             if (!isMatch) {
                 return res.status(400).json({
-                    error: "Current password is incorrect"
+                    error: 'Current password is incorrect'
                 });
             }
 
             if (newPassword.length < 6) {
                 return res.status(400).json({
-                    error: "Password needs to be at least 6 characters long"
-                })
+                    error: 'Password needs to be at least 6 characters long'
+                });
             }
 
             const salt = await bcrypt.genSalt(10);
@@ -190,7 +204,9 @@ export const updateUserProfile = async (req, res) => {
 
         if (profileImg) {
             if (user.profileImage) {
-                await cloudinary.uploader.destroy(user.profileImage.split("/").pop().split(".")[0]);
+                await cloudinary.uploader.destroy(
+                    user.profileImage.split('/').pop().split('.')[0]
+                );
             }
 
             const uploadedIMG = await cloudinary.uploader.upload(profileImg);
@@ -199,7 +215,9 @@ export const updateUserProfile = async (req, res) => {
 
         if (coverImg) {
             if (user.coverImage) {
-                await cloudinary.uploader.destroy(user.coverImage.split("/").pop().split(".")[0]);
+                await cloudinary.uploader.destroy(
+                    user.coverImage.split('/').pop().split('.')[0]
+                );
             }
 
             const uploadedIMG = await cloudinary.uploader.upload(coverImg);
@@ -220,9 +238,9 @@ export const updateUserProfile = async (req, res) => {
 
         return res.status(200).json(user);
     } catch (error) {
-        console.log("Error in getSuggestedUsers: ", error.message);
+        console.log('Error in getSuggestedUsers: ', error.message);
         return res.status(500).json({
             error: error.message
         });
     }
-}
+};

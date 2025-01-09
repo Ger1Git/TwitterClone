@@ -40,7 +40,6 @@ export const createPost = async (req, res) => {
         res.status(500).json({
             error: 'Internal server error'
         });
-        console.log('Error in createPost controller: ', error);
     }
 };
 
@@ -71,7 +70,6 @@ export const deletePost = async (req, res) => {
             message: 'Post deleted succesfully'
         });
     } catch (error) {
-        console.log('Error in deletePost controller: ', error);
         res.status(500).json({
             error: 'Internal server error'
         });
@@ -199,7 +197,6 @@ export const getAllPosts = async (req, res) => {
 
         return res.status(200).json(postsWithLikeStatus);
     } catch (error) {
-        console.log('Error in getAllPosts controller: ', error);
         res.status(500).json({
             error: 'Internal server error'
         });
@@ -225,7 +222,6 @@ export const getLikedPosts = async (req, res) => {
 
         return res.status(200).json(likedPosts);
     } catch (error) {
-        console.log('Error in getLikedPosts controller: ', error);
         res.status(500).json({
             error: 'Internal server error'
         });
@@ -254,7 +250,6 @@ export const getFollowingPosts = async (req, res) => {
 
         return res.status(200).json(followingPosts);
     } catch (error) {
-        console.log('Error in getFollowingPosts controller: ', error);
         res.status(500).json({
             error: 'Internal server error'
         });
@@ -281,7 +276,6 @@ export const getUserPosts = async (req, res) => {
 
         return res.status(200).json(myPosts);
     } catch (error) {
-        console.log('Error in getMyPosts controller: ', error);
         res.status(500).json({
             error: 'Internal server error'
         });

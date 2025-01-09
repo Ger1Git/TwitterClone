@@ -106,7 +106,9 @@ const Post = ({ post }) => {
                     className="w-8 rounded-full overflow-hidden"
                 >
                     <img
-                        src={postAuthor.profileImg || 'avatars/placeholder.png'}
+                        src={
+                            postAuthor.profileImg || '/avatars/placeholder.png'
+                        }
                         alt="Author Avatar"
                     />
                 </Link>
