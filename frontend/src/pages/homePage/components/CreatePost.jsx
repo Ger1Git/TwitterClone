@@ -74,7 +74,9 @@ const PostCreator = () => {
             <div className="avatar">
                 <div className="w-8 rounded-full">
                     <img
-                        src={authUser.profileImage || 'avatars/placeholder.png'}
+                        src={
+                            authUser.profileImage || '/avatars/placeholder.png'
+                        }
                         alt="User Avatar"
                     />
                 </div>

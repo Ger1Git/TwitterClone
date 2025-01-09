@@ -134,7 +134,7 @@ const NotificationPage = () => {
                                             src={
                                                 notification.from
                                                     .profileImage ||
-                                                'avatars/placeholder.png'
+                                                '/avatars/placeholder.png'
                                             }
                                             alt="User Avatar"
                                         />

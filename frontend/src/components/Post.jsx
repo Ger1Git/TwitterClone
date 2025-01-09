@@ -10,14 +10,17 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import { formatDistanceToNow } from 'date-fns';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Post = ({ post }) => {
     const [newComment, setNewComment] = useState('');
-    const [hasLikedPost, setHasLikedPost] = useState(post.isLikedByUser);
     const queryClient = useQueryClient();
     const { data: authUser } = useQuery({ queryKey: ['authUser'] });
     const isUserPostOwner = authUser?._id === post.user._id;
+    const [hasLikedPost, setHasLikedPost] = useState(
+        post.isLikedByUser || authUser?.likedPosts.includes(post._id)
+    );
 
     const { mutate: deletePost, isPending: isDeleting } = useMutation({
         mutationFn: async () => {
@@ -88,7 +91,9 @@ const Post = ({ post }) => {
     };
 
     const postAuthor = post.user;
-    const postDate = '1h';
+    const postDate = formatDistanceToNow(new Date(post.createdAt), {
+        addSuffix: true
+    });
     const isSubmittingComment = true;
 
     const submitComment = (e) => {

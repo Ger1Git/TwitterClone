@@ -7,6 +7,9 @@ export default {
         extend: {
             boxShadow: {
                 'right-bottom': '4px 4px 8px rgba(255, 255, 255, 0.2)'
+            },
+            borderWidth: {
+                3: '3px'
             }
         }
     },

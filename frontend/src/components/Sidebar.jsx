@@ -81,7 +81,7 @@ const Sidebar = () => {
                 {authUser && (
                     <div
                         ref={menuButtonRef}
-                        className="mt-auto mb-10 mx-3 cursor-pointer relative flex gap-2 items-start transition-all duration-300 hover:bg-[#181818] p-4 rounded-full"
+                        className="mt-auto mb-7 mx-3 cursor-pointer relative flex gap-2 items-start transition-all duration-300 hover:bg-[#181818] p-4 rounded-full"
                         onClick={toggleMenu}
                     >
                         <Link
@@ -92,7 +92,7 @@ const Sidebar = () => {
                                 <img
                                     src={
                                         authUser?.profileImg ||
-                                        'avatars/placeholder.png'
+                                        '/avatars/placeholder.png'
                                     }
                                     alt="Profile"
                                 />

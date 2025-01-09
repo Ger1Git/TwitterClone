@@ -95,7 +95,7 @@ const Search = () => {
                                         <img
                                             src={
                                                 user.profileImg ||
-                                                'avatars/placeholder.png'
+                                                '/avatars/placeholder.png'
                                             }
                                             alt="User Avatar"
                                         />

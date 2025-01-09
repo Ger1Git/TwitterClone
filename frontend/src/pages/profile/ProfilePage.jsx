@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Posts from '../../components/Posts';
 import ProfileHeaderSkeleton from '../../components/ProfileHeaderSkeleton';
@@ -15,7 +15,7 @@ import { format } from 'date-fns';
 const ProfilePage = () => {
     const [coverImg, setCoverImg] = useState(null);
     const [profileImg, setProfileImg] = useState(null);
-    const [feedType, setFeedType] = useState('forYou');
+    const [feedType, setFeedType] = useState('posts');
 
     const coverImgRef = useRef(null);
     const profileImgRef = useRef(null);
@@ -24,7 +24,12 @@ const ProfilePage = () => {
 
     const isMyProfile = true;
 
-    const { data: user, isLoading } = useQuery({
+    const {
+        data: user,
+        isLoading,
+        refetch,
+        isRefetching
+    } = useQuery({
         queryKey: ['userProfile'],
         queryFn: async () => {
             try {
@@ -53,15 +58,21 @@ const ProfilePage = () => {
         }
     };
 
+    const userCreatedAt = user && format(new Date(user.createdAt), 'MMMM yyyy');
+
+    useEffect(() => {
+        refetch();
+    }, [username, refetch]);
+
     return (
         <div className="flex-[4_4_0]  border-r border-gray-700 min-h-screen ">
             {/* HEADER */}
-            {isLoading && <ProfileHeaderSkeleton />}
-            {!isLoading && !user && (
+            {(isLoading || isRefetching) && <ProfileHeaderSkeleton />}
+            {!isLoading && !isRefetching && !user && (
                 <p className="text-center text-lg mt-4">User not found</p>
             )}
             <div className="flex flex-col">
-                {!isLoading && user && (
+                {!isLoading && !isRefetching && user && (
                     <>
                         <div className="flex gap-10 px-4 py-2 items-center">
                             <Link to="/">
@@ -83,13 +94,13 @@ const ProfilePage = () => {
                                     src={
                                         coverImg ||
                                         user?.coverImg ||
-                                        'avatars/cover.png'
+                                        '/avatars/cover.png'
                                     }
                                     className="h-52 w-full object-cover"
                                     alt="cover image"
                                 />
                             ) : (
-                                <div className="bg-black h-52 w-full"></div>
+                                <div className="bg-gray-800 h-52 w-full"></div>
                             )}
 
                             {isMyProfile && (
@@ -119,7 +130,7 @@ const ProfilePage = () => {
                             />
                             {/* USER AVATAR */}
                             <div className="inline-flex absolute -bottom-16 left-4">
-                                <div className="w-32 rounded-full relative overflow-hidden group">
+                                <div className="w-32 rounded-full relative overflow-hidden group border-3 border-black">
                                     <img
                                         src={
                                             profileImg ||
@@ -195,15 +206,14 @@ const ProfilePage = () => {
                                         </>
                                     </div>
                                 )}
-                                <div className="flex gap-2 items-center">
-                                    <IoCalendarOutline className="w-4 h-4 text-slate-500" />
-                                    <span className="text-sm text-slate-500">
-                                        {format(
-                                            new Date(user?.createdAt),
-                                            'd MMMM yyyy'
-                                        )}
-                                    </span>
-                                </div>
+                                {userCreatedAt && (
+                                    <div className="flex gap-2 items-center">
+                                        <IoCalendarOutline className="w-4 h-4 text-slate-500" />
+                                        <span className="text-sm text-slate-500">
+                                            {userCreatedAt}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                             <div className="flex gap-2">
                                 <div className="flex gap-1 items-center">
@@ -224,30 +234,47 @@ const ProfilePage = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex w-full border-b border-gray-700 mt-4">
+                        <div className="flex w-full border-b border-gray-700 mt-4 relative">
+                            {/* Posts Tab */}
                             <div
-                                className="flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 relative cursor-pointer"
-                                onClick={() => setFeedType('forYou')}
+                                className={`flex justify-center flex-1 p-3 transition duration-300 cursor-pointer ${
+                                    feedType === 'posts'
+                                        ? 'text-white'
+                                        : 'text-slate-500'
+                                }`}
+                                onClick={() => setFeedType('posts')}
                             >
                                 Posts
-                                {feedType === 'posts' && (
-                                    <div className="absolute bottom-0 w-10 h-1 rounded-full bg-primary" />
-                                )}
                             </div>
+
+                            {/* Likes Tab */}
                             <div
-                                className="flex justify-center flex-1 p-3 text-slate-500 hover:bg-secondary transition duration-300 relative cursor-pointer"
+                                className={`flex justify-center flex-1 p-3 transition duration-300 cursor-pointer ${
+                                    feedType === 'likes'
+                                        ? 'text-white'
+                                        : 'text-slate-500'
+                                }`}
                                 onClick={() => setFeedType('likes')}
                             >
                                 Likes
-                                {feedType === 'likes' && (
-                                    <div className="absolute bottom-0 w-10  h-1 rounded-full bg-primary" />
-                                )}
                             </div>
+
+                            {/* Indicator */}
+                            <div
+                                className="absolute bottom-0 w-10 h-1 rounded-full bg-primary transition-all duration-300"
+                                style={{
+                                    left: feedType === 'posts' ? '22%' : '75%',
+                                    transform:
+                                        feedType === 'likes'
+                                            ? 'translateX(-50%)'
+                                            : 'none'
+                                }}
+                            />
                         </div>
                     </>
                 )}
 
-                <Posts feedType={feedType} />
+                <Posts feedType={feedType} username={username} />
             </div>
         </div>
     );
