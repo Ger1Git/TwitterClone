@@ -7,8 +7,9 @@
         "node": "22.x"
     },
     "scripts": {
-        "start": "node index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "dev": "nodemon backend/server.js",
+        "start": "node backend/server.js",
+        "debug": "nodemon --inspect backend/server.js"
     },
     "keywords": [],
     "author": "",
