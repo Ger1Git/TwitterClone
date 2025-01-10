@@ -2,9 +2,9 @@
     "name": "Twitter",
     "version": "1.0.0",
     "description": "",
-    "main": "server.js",
+    "main": "backend/server.js",
     "engines": {
-        "node": "22.x"
+        "node": "18.x"
     },
     "scripts": {
         "dev": "nodemon backend/server.js",
