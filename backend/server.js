@@ -31,6 +31,17 @@ app.get('/', (req, res) => {
     res.send('Server is ready');
 });
 
+app.get('/api/db-status', (req, res) => {
+    const state = mongoose.connection.readyState;
+    const status = {
+        0: 'disconnected',
+        1: 'connected',
+        2: 'connecting',
+        3: 'disconnecting'
+    };
+    res.send(`Database connection status: ${status[state]}`);
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
