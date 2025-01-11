@@ -7,6 +7,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import connectMongoDB from './db/connectMongo.js';
 import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
+import mongoose from 'mongoose';
 
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config({ path: './backend/.env' });
