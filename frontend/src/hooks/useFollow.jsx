@@ -1,14 +1,18 @@
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import apiUrl from '../utils/config';
 
 const useFollow = () => {
     const queryClient = useQueryClient();
     const { mutate: follow, isPending } = useMutation({
         mutationFn: async (userId) => {
             try {
-                const res = await fetch(`/api/users/follow/${userId}`, {
-                    method: 'POST'
-                });
+                const res = await fetch(
+                    `${apiUrl}/api/users/follow/${userId}`,
+                    {
+                        method: 'POST'
+                    }
+                );
 
                 if (!res.ok) {
                     throw new Error('Something went wrong');

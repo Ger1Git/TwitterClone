@@ -12,6 +12,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
 import LoadingSpinner from '../components/LoadingSpinner';
+import apiUrl from '../utils/config';
 
 const Post = ({ post }) => {
     const [newComment, setNewComment] = useState('');
@@ -24,7 +25,7 @@ const Post = ({ post }) => {
 
     const { mutate: deletePost, isPending: isDeleting } = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`/api/posts/delete/${post._id}`, {
+            const res = await fetch(`${apiUrl}/api/posts/delete/${post._id}`, {
                 method: 'DELETE'
             });
             if (!res.ok) throw new Error('Failed to delete post');
@@ -37,7 +38,7 @@ const Post = ({ post }) => {
 
     const { mutate: likePost, isPending: isLiking } = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`/api/posts/like/${post._id}`, {
+            const res = await fetch(`${apiUrl}/api/posts/like/${post._id}`, {
                 method: 'POST'
             });
             if (!res.ok) throw new Error('Failed to like/unlike post');
@@ -59,7 +60,7 @@ const Post = ({ post }) => {
 
     const { mutate: commentPost, isPending: isCommenting } = useMutation({
         mutationFn: async () => {
-            const res = await fetch(`/api/posts/comment/${post._id}`, {
+            const res = await fetch(`${apiUrl}/api/posts/comment/${post._id}`, {
                 method: 'POST',
                 body: JSON.stringify({ text: newComment }),
                 headers: {

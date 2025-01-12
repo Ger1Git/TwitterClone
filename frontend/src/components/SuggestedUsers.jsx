@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import useFollow from '../hooks/useFollow';
 import LoadingSpinner from './LoadingSpinner';
+import apiUrl from '../utils/config';
 
 const SuggestedUsers = () => {
     const [pendingFollow, setPendingFollow] = useState(null);
@@ -13,7 +14,7 @@ const SuggestedUsers = () => {
         queryKey: ['suggestedUsers'],
         queryFn: async () => {
             try {
-                const res = await fetch('/api/users/suggestions');
+                const res = await fetch(`${apiUrl}/api/users/suggestions`);
 
                 if (!res.ok) {
                     throw new Error('Something went wrong');

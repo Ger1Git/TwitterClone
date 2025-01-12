@@ -7,6 +7,7 @@ import { IoTrashBin } from 'react-icons/io5';
 import { toast } from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
+import apiUrl from '../../utils/config';
 
 const NotificationPage = () => {
     const queryClient = useQueryClient();
@@ -15,7 +16,7 @@ const NotificationPage = () => {
         queryKey: ['notifications'],
         queryFn: async () => {
             try {
-                const res = await fetch('/api/notifications');
+                const res = await fetch(`${apiUrl}/api/notifications`);
 
                 if (!res.ok) {
                     throw new Error('An error occurred');
@@ -31,7 +32,7 @@ const NotificationPage = () => {
     const { mutate: deleteAllNotifications } = useMutation({
         mutationFn: async () => {
             try {
-                const res = await fetch('/api/notifications/all', {
+                const res = await fetch(`${apiUrl}/api/notifications/all`, {
                     method: 'DELETE'
                 });
 
@@ -57,7 +58,7 @@ const NotificationPage = () => {
         mutationFn: async (notificationId) => {
             try {
                 const res = await fetch(
-                    `/api/notifications/${notificationId}`,
+                    `${apiUrl}/api/notifications/${notificationId}`,
                     {
                         method: 'DELETE'
                     }

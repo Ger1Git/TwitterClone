@@ -5,6 +5,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import XSvg from './XSVG';
 import { sidebarLinks } from '../utils/utils'; // Import the utility file
+import apiUrl from '../utils/config';
 
 const Sidebar = () => {
     const [menuVisible, setMenuVisible] = useState(false);
@@ -34,7 +35,9 @@ const Sidebar = () => {
     const { mutate: logout } = useMutation({
         mutationFn: async () => {
             try {
-                const res = await fetch('/api/auth/logout', { method: 'POST' });
+                const res = await fetch(`${apiUrl}/api/auth/logout`, {
+                    method: 'POST'
+                });
                 const data = await res.json();
                 if (data.error) throw new Error(data.error);
                 return data;

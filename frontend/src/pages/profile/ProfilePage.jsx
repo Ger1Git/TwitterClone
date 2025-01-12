@@ -12,6 +12,7 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
 import useFollow from '../../hooks/useFollow';
+import apiUrl from '../../utils/config';
 
 const ProfilePage = () => {
     const [coverImg, setCoverImg] = useState(null);
@@ -38,7 +39,9 @@ const ProfilePage = () => {
         queryKey: ['userProfile'],
         queryFn: async () => {
             try {
-                const res = await fetch(`/api/users/profile/${username}`);
+                const res = await fetch(
+                    `${apiUrl}/api/users/profile/${username}`
+                );
 
                 if (!res.ok) {
                     throw new Error('Something went wrong');
@@ -54,7 +57,7 @@ const ProfilePage = () => {
     const { mutate: updateProfile, isPending: isUpdating } = useMutation({
         mutationFn: async () => {
             try {
-                const res = await fetch(`/api/users/update`, {
+                const res = await fetch(`${apiUrl}/api/users/update`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
