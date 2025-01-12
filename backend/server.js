@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
@@ -20,6 +21,14 @@ cloudinary.config({
 });
 
 const app = express();
+
+const allowedOrigin = process.env.ALLOWED_ORIGIN;
+
+app.use(
+    cors({
+        origin: allowedOrigin
+    })
+);
 
 app.use(express.json({ limit: '5mb' }));
 app.use(cookieParser());
