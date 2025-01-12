@@ -10,7 +10,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import ProfilePage from './pages/profile/ProfilePage';
 import { Toaster, toast } from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
-import apiUrl from '../utils/config';
+import apiUrl from './utils/config';
 
 function App() {
     const { data: authUser, isLoading } = useQuery({
