@@ -10,7 +10,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import mongoose from 'mongoose';
 
 if (process.env.NODE_ENV !== 'production') {
-    dotenv.config({ path: './backend/.env' });
+    dotenv.config();
 }
 
 cloudinary.config({
@@ -43,7 +43,7 @@ app.get('/api/db-status', (req, res) => {
     res.send(`Database connection status: ${status[state]}`);
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
     console.log('Server is running on http://localhost:3000');

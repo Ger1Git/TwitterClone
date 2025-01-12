@@ -2,14 +2,14 @@
     "name": "Twitter",
     "version": "1.0.0",
     "description": "",
-    "main": "backend/server.js",
+    "main": "server.js",
     "engines": {
         "node": "18.x"
     },
     "scripts": {
-        "dev": "nodemon backend/server.js",
-        "start": "node backend/server.js",
-        "debug": "nodemon --inspect backend/server.js"
+        "dev": "nodemon server.js",
+        "start": "node server.js",
+        "debug": "nodemon --inspect server.js"
     },
     "keywords": [],
     "author": "",
