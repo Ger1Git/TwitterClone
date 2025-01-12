@@ -22,11 +22,9 @@ cloudinary.config({
 
 const app = express();
 
-const allowedOrigin = process.env.ALLOWED_ORIGIN;
-
 app.use(
     cors({
-        origin: allowedOrigin,
+        origin: process.env.ALLOWED_ORIGIN,
         methods: 'GET,POST,PUT,DELETE',
         allowedHeaders: 'Content-Type,Authorization'
     })
@@ -51,7 +49,11 @@ app.get('/api/db-status', (req, res) => {
         2: 'connecting',
         3: 'disconnecting'
     };
-    res.send(`Database connection status: ${status[state]} ${allowedOrigin}`);
+    res.send(
+        `Database connection status: ${status[state]} ${
+            process.env.ALLOWED_ORIGIN || 'No origin specified'
+        }`
+    );
 });
 
 const PORT = process.env.PORT || 8000;
