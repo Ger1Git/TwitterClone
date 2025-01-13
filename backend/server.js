@@ -62,11 +62,12 @@ app.get('/api/db-status', (req, res) => {
     );
 });
 
+connectMongoDB();
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    connectMongoDB();
 });
 
 export default app;
