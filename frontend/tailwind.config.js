@@ -1,5 +1,6 @@
 import daisyui from 'daisyui';
 import daisyUIThemes from 'daisyui/src/theming/themes';
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -14,7 +15,6 @@ export default {
         }
     },
     plugins: [daisyui],
-
     daisyui: {
         themes: [
             'light',
@@ -26,5 +26,14 @@ export default {
                 }
             }
         ]
-    }
+    },
+    safelist: [
+        /^btn/, // Include all button classes
+        /^card/, // Include all card classes
+        /^text-/, // Include dynamic text classes
+        /^bg-/, // Include dynamic background classes
+        /^input/, // Include all input classes
+        /^select/, // Include all select classes
+        /^textarea/ // Include all textarea classes
+    ]
 };
