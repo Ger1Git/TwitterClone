@@ -57,15 +57,13 @@ app.get('/api/db-status', (req, res) => {
         2: 'connecting',
         3: 'disconnecting'
     };
-    res.send(
-        `Database connection status: ${status[state]} ${process.env.PORT}`
-    );
+    res.send(`Database connection status: ${status[state]} ${process.env}`);
 });
 
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
-    console.log('Server is running on http://localhost:3000');
+    console.log(`Server is running on http://localhost:${PORT}`);
     connectMongoDB();
 });
 
