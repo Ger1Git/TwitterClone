@@ -10,7 +10,7 @@ const generateTokenAndSetCookie = (userId, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV !== 'development',
         sameSite: 'none',
-        domain: '.vercel.app',
+        domain: 'twitter-clone-ger1git.vercel.app',
         path: '/'
     });
 };
