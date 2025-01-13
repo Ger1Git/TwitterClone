@@ -57,7 +57,9 @@ app.get('/api/db-status', (req, res) => {
         2: 'connecting',
         3: 'disconnecting'
     };
-    res.send(`Database connection status: ${status[state]} ${process.env}`);
+    res.send(
+        `Database connection status: ${status[state]} ${res.json(process.env)}`
+    );
 });
 
 const PORT = process.env.PORT || 8000;
