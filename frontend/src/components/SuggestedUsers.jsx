@@ -14,7 +14,9 @@ const SuggestedUsers = () => {
         queryKey: ['suggestedUsers'],
         queryFn: async () => {
             try {
-                const res = await fetch(`${apiUrl}/api/users/suggestions`);
+                const res = await fetch(`${apiUrl}/api/users/suggestions`, {
+                    credentials: 'include'
+                });
 
                 if (!res.ok) {
                     throw new Error('Something went wrong');

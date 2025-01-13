@@ -36,7 +36,8 @@ const Sidebar = () => {
         mutationFn: async () => {
             try {
                 const res = await fetch(`${apiUrl}/api/auth/logout`, {
-                    method: 'POST'
+                    method: 'POST',
+                    credentials: 'include'
                 });
                 const data = await res.json();
                 if (data.error) throw new Error(data.error);

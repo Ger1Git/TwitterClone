@@ -4,7 +4,6 @@ import SignUpPage from './pages/signup/SignUpPage';
 import LoginPage from './pages/login/LoginPage';
 import Sidebar from './components/Sidebar';
 import RightPanel from './components/RightPanel';
-import Search from './components/Search';
 import NotificationPage from './pages/notification/NotificationPage';
 import LoadingSpinner from './components/LoadingSpinner';
 import ProfilePage from './pages/profile/ProfilePage';
@@ -17,7 +16,9 @@ function App() {
         queryKey: ['authUser'],
         queryFn: async () => {
             try {
-                const res = await fetch(`${apiUrl}/api/auth/account`);
+                const res = await fetch(`${apiUrl}/api/auth/account`, {
+                    credentials: 'include'
+                });
                 let data;
 
                 if (res.ok) {

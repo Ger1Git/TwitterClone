@@ -57,7 +57,7 @@ app.get('/api/db-status', (req, res) => {
         2: 'connecting',
         3: 'disconnecting'
     };
-    res.send(`Database connection status: ${status[state]}}`);
+    res.send(`Database connection status: ${status[state]}`);
 });
 
 connectMongoDB();

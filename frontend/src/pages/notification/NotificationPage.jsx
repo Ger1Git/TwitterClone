@@ -16,7 +16,9 @@ const NotificationPage = () => {
         queryKey: ['notifications'],
         queryFn: async () => {
             try {
-                const res = await fetch(`${apiUrl}/api/notifications`);
+                const res = await fetch(`${apiUrl}/api/notifications`, {
+                    credentials: 'include'
+                });
 
                 if (!res.ok) {
                     throw new Error('An error occurred');
@@ -33,7 +35,8 @@ const NotificationPage = () => {
         mutationFn: async () => {
             try {
                 const res = await fetch(`${apiUrl}/api/notifications/all`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    credentials: 'include'
                 });
 
                 if (!res.ok) {
@@ -60,7 +63,8 @@ const NotificationPage = () => {
                 const res = await fetch(
                     `${apiUrl}/api/notifications/${notificationId}`,
                     {
-                        method: 'DELETE'
+                        method: 'DELETE',
+                        credentials: 'include'
                     }
                 );
 

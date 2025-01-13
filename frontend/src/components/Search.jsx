@@ -20,7 +20,10 @@ const Search = () => {
         queryFn: async () => {
             try {
                 const res = await fetch(
-                    `${apiUrl}/api/users?search=${debouncedSearchQuery}`
+                    `${apiUrl}/api/users?search=${debouncedSearchQuery}`,
+                    {
+                        credentials: 'include'
+                    }
                 );
 
                 if (!res.ok) {

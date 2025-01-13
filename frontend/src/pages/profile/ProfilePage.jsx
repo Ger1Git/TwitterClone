@@ -40,7 +40,10 @@ const ProfilePage = () => {
         queryFn: async () => {
             try {
                 const res = await fetch(
-                    `${apiUrl}/api/users/profile/${username}`
+                    `${apiUrl}/api/users/profile/${username}`,
+                    {
+                        credentials: 'include'
+                    }
                 );
 
                 if (!res.ok) {
@@ -59,6 +62,7 @@ const ProfilePage = () => {
             try {
                 const res = await fetch(`${apiUrl}/api/users/update`, {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
                     },
