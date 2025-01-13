@@ -9,7 +9,9 @@ const generateTokenAndSetCookie = (userId, res) => {
         maxAge: 10 * 24 * 60 * 60 * 1000,
         htppOnly: true,
         secure: process.env.NODE_ENV !== 'development',
-        sameSite: 'none'
+        sameSite: 'none',
+        domain: '.vercel.app',
+        path: '/'
     });
 };
 
