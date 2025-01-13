@@ -22,7 +22,21 @@ cloudinary.config({
 
 const app = express();
 
-app.use(cors());
+const frontendUrl = process.env.FRONTEND_URL;
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (origin === frontendUrl || !origin) {
+            callback(null, true);
+        } else {
+            callback(
+                new Error('CORS policy: This origin is not allowed by CORS.')
+            );
+        }
+    },
+    credentials: true
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '5mb' }));
 app.use(cookieParser());

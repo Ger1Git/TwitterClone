@@ -20,7 +20,7 @@ export default {
             {
                 black: {
                     'color-scheme': 'dark',
-                    primary: '#373737',
+                    primary: '#1d9bf0',
                     secondary: '#373737',
                     accent: '#373737',
                     'base-100': '#000000',
